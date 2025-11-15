@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz sull'Intelligenza Artificiale</title>
+    <style>
+        /* Stili CSS base per il quiz */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        #quiz-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 90%;
+        }
+
+        h1 {
+            color: #4a90e2;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .options label {
+            display: block;
+            margin: 8px 0;
+            cursor: pointer;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #4cae4c;
+        }
+
+        #results {
+            margin-top: 25px;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .incorrect {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <h1>🧠 Quiz sull'Intelligenza Artificiale</h1>
+    <div id="quiz">
+        </div>
+    <button id="submit">Invia Risposte</button>
+    <div id="results"></div>
+</div>
+
+<script>
+    // Definisci le domande del quiz
+    const quizQuestions = [
+        {
+            question: "Quale dei seguenti è un esempio di apprendimento non supervisionato (Unsupervised Learning)?",
+            options: ["Regressione Lineare", "Raggruppamento (Clustering)", "Classificazione di immagini", "Reti Neurali Ricorrenti"],
+            answer: "Raggruppamento (Clustering)"
+        },
+        {
+            question: "Cosa significa l'acronimo 'ANN' in termini di IA?",
+            options: ["Advanced Network Navigator", "Artificial Neural Network", "Automated Natural Notation", "Adaptive Node Numerator"],
+            answer: "Artificial Neural Network"
+        },
+        {
+            question: "Qual è la funzione di attivazione più comunemente usata per gli strati nascosti delle Reti Neurali?",
+            options: ["Sigmoide", "Tanh", "ReLU", "Softmax"],
+            answer: "ReLU"
+        },
+        {
+            question: "Quale termine descrive l'incapacità di un modello di apprendimento automatico di generalizzare a dati nuovi dopo aver imparato troppo bene i dati di addestramento?",
+            options: ["Underfitting", "Bias", "Overfitting", "Varianza"],
+            answer: "Overfitting"
+        }
+    ];
+
+    const quizDiv = document.getElementById('quiz');
+    const submitButton = document.getElementById('submit');
+    const resultsDiv = document.getElementById('results');
+
+    // Funzione per costruire il quiz
+    function buildQuiz() {
+        quizQuestions.forEach((q, index) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.classList.add('question');
+            questionDiv.innerHTML = `<strong>${index + 1}. ${q.question}</strong>`;
+            
+            const optionsDiv = document.createElement('div');
+            optionsDiv.classList.add('options');
+
+            q.options.forEach(option => {
+                const label = document.createElement('label');
+                label.innerHTML = `
+                    <input type="radio" name="question${index}" value="${option}">
+                    ${option}
+                `;
+                optionsDiv.appendChild(label);
+            });
+
+            questionDiv.appendChild(optionsDiv);
+            quizDiv.appendChild(questionDiv);
+        });
+    }
+
+    // Funzione per mostrare i risultati
+    function showResults() {
+        const answerContainers = quizDiv.querySelectorAll('.options');
+        let numCorrect = 0;
+
+        quizQuestions.forEach((q, index) => {
+            const answerContainer = answerContainers[index];
+            const selector = `input[name=question${index}]:checked`;
+            const userAnswerElement = (answerContainer.querySelector(selector) || {}).value;
+            const questionElement = quizDiv.children[index];
+
+            // Rimuovi le classi precedenti
+            questionElement.classList.remove('correct', 'incorrect');
+            
+            // Controlla la risposta
+            if (userAnswerElement === q.answer) {
+                numCorrect++;
+                questionElement.classList.add('correct');
+            } else {
+                questionElement.classList.add('incorrect');
+            }
+        });
+
+        // Mostra il risultato finale
+        resultsDiv.innerHTML = `Hai risposto correttamente a ${numCorrect} su ${quizQuestions.length} domande!`;
+    }
+
+    // Costruisci il quiz all'avvio
+    buildQuiz();
+
+    // Aggiungi l'evento al pulsante di invio
+    submitButton.addEventListener('click', showResults);
+</script>
+
+</body>
+</html>
