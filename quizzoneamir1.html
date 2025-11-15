@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz sull'Intelligenza Artificiale</title>
+    <style>
+        /* Stili CSS base per il quiz */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        #quiz-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 90%;
+        }
+
+        h1 {
+            color: #4a90e2;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .options label {
+            display: block;
+            margin: 8px 0;
+            cursor: pointer;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #4cae4c;
+        }
+
+        #results {
+            margin-top: 25px;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .incorrect {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <h1>🧠 Quiz sull'Intelligenza Artificiale (10 Domande)</h1>
+    <div id="quiz">
+        </div>
+    <button id="submit">Invia Risposte</button>
+    <div id="results"></div>
+</div>
+
+<script>
+    // Definisci le 10 domande del quiz
+    const quizQuestions = [
+        {
+            question: "1. Quale dei seguenti è un esempio di apprendimento non supervisionato (Unsupervised Learning)?",
+            options: ["Regressione Lineare", "Raggruppamento (Clustering)", "Classificazione di immagini", "Reti Neurali Ricorrenti"],
+            answer: "Raggruppamento (Clustering)"
+        },
+        {
+            question: "2. Cosa significa l'acronimo 'ANN' in termini di IA?",
+            options: ["Advanced Network Navigator", "Artificial Neural Network", "Automated Natural Notation", "Adaptive Node Numerator"],
+            answer: "Artificial Neural Network"
+        },
+        {
+            question: "3. Qual è la funzione di attivazione più comunemente usata per gli strati nascosti delle Reti Neurali?",
+            options: ["Sigmoide", "Tanh", "ReLU", "Softmax"],
+            answer: "ReLU"
+        },
+        {
+            question: "4. Quale termine descrive l'incapacità di un modello di apprendimento automatico di generalizzare a dati nuovi dopo aver imparato troppo bene i dati di addestramento?",
+            options: ["Underfitting", "Bias", "Overfitting", "Varianza"],
+            answer: "Overfitting"
+        },
+        {
+            question: "5. Quale famoso test è stato proposto per determinare se una macchina può esibire un comportamento intelligente indistinguibile da quello umano?",
+            options: ["Test di Turing", "Test di Von Neumann", "Test di Hal", "Test di Babbage"],
+            answer: "Test di Turing"
+        },
+        {
+            question: "6. Quale disciplina dell'IA si concentra sull'insegnare alle macchine a 'vedere' e interpretare il mondo visivo?",
+            options: ["Natural Language Processing (NLP)", "Reinforcement Learning (RL)", "Computer Vision", "Machine Translation"],
+            answer: "Computer Vision"
+        },
+        {
+            question: "7. In quale campo il 'Reinforcement Learning' (Apprendimento per Rinforzo) è tipicamente più applicato?",
+            options: ["Previsione dei prezzi azionari", "Guida autonoma e giochi", "Analisi del sentiment", "Riconoscimento vocale"],
+            answer: "Guida autonoma e giochi"
+        },
+        {
+            question: "8. Chi è generalmente considerato uno dei padri fondatori dell'Intelligenza Artificiale?",
+            options: ["Bill Gates", "Alan Turing", "Mark Zuckerberg", "Steve Jobs"],
+            answer: "Alan Turing"
+        },
+        {
+            question: "9. Qual è il componente fondamentale di una Rete Neurale Artificiale, che riceve input, li elabora e produce un output?",
+            options: ["Database", "Algoritmo", "Nodo (Neurone)", "Server"],
+            answer: "Nodo (Neurone)"
+        },
+        {
+            question: "10. Cosa si intende per 'Big Data'?",
+            options: ["Dati di piccole dimensioni", "Set di dati estremamente grandi e complessi", "Solo dati di testo", "Dati elaborati manualmente"],
+            answer: "Set di dati estremamente grandi e complessi"
+        }
+    ];
+
+    const quizDiv = document.getElementById('quiz');
+    const submitButton = document.getElementById('submit');
+    const resultsDiv = document.getElementById('results');
+
+    // Funzione per costruire il quiz
+    function buildQuiz() {
+        quizQuestions.forEach((q, index) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.classList.add('question');
+            // La domanda include già la numerazione
+            questionDiv.innerHTML = `<strong>${q.question}</strong>`;
+            
+            const optionsDiv = document.createElement('div');
+            optionsDiv.classList.add('options');
+
+            q.options.forEach(option => {
+                const label = document.createElement('label');
+                label.innerHTML = `
+                    <input type="radio" name="question${index}" value="${option}">
+                    ${option}
+                `;
+                optionsDiv.appendChild(label);
+            });
+
+            questionDiv.appendChild(optionsDiv);
+            quizDiv.appendChild(questionDiv);
+        });
+    }
+
+    // Funzione per mostrare i risultati
+    function showResults() {
+        const answerContainers = quizDiv.querySelectorAll('.options');
+        let numCorrect = 0;
+
+        quizQuestions.forEach((q, index) => {
+            const answerContainer = answerContainers[index];
+            const selector = `input[name=question${index}]:checked`;
+            const userAnswerElement = (answerContainer.querySelector(selector) || {}).value;
+            const questionElement = quizDiv.children[index];
+
+            // Rimuovi le classi precedenti
+            questionElement.classList.remove('correct', 'incorrect');
+            
+            // Controlla la risposta
+            if (userAnswerElement === q.answer) {
+                numCorrect++;
+                questionElement.classList.add('correct');
+            } else {
+                questionElement.classList.add('incorrect');
+            }
+        });
+
+        // Mostra il risultato finale
+        resultsDiv.innerHTML = `Hai risposto correttamente a ${numCorrect} su ${quizQuestions.length} domande!`;
+    }
+
+    // Costruisci il quiz all'avvio
+    buildQuiz();
+
+    // Aggiungi l'evento al pulsante di invio
+    submitButton.addEventListener('click', showResults);
+</script>
+
+</body>
+</html>
